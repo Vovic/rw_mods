@@ -64,7 +64,7 @@ namespace NR_AutoMachineTool
             }
         }
 
-        public override void Print(SectionLayer layer, Thing thing)
+        public override void Print(SectionLayer layer, Thing thing, float extraRotation)
         {
             if (thing is Blueprint)
             {

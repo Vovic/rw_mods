@@ -386,8 +386,14 @@ namespace NR_AutoMachineTool
             var result = WorkableBill(consumable).Select(tuple =>
             {
                 this.bill = tuple.Value1;
-//                tuple.Value2.Select(v => v.thing).SelectMany(t => Option(t as Corpse)).ForEach(c => c.Strip());
-                this.ingredients = tuple.Value2.Select(t => t.thing.SplitOff(t.count)).ToList();
+                //                tuple.Value2.Select(v => v.thing).SelectMany(t => Option(t as Corpse)).ForEach(c => c.Strip());
+                try
+                {
+                    this.ingredients = tuple.Value2.Select(t => t.thing.SplitOff(t.count)).ToList();
+                } catch
+                {
+                    return new { Result = false, WorkAmount = 0f };
+                }
                 this.dominant = this.DominantIngredient(this.ingredients);
                 if (this.bill.recipe.UsesUnfinishedThing)
                 {
@@ -398,7 +404,7 @@ namespace NR_AutoMachineTool
                     CompColorable compColorable = this.unfinished.TryGetComp<CompColorable>();
                     if (compColorable != null)
                     {
-                        compColorable.Color = this.dominant.DrawColor;
+                        compColorable.SetColor(this.dominant.DrawColor);
                     }
                 }
                 return new { Result = true, WorkAmount = this.bill.recipe.WorkAmountTotal(this.bill.recipe.UsesUnfinishedThing ? this.dominant?.def : null) };
